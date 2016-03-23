@@ -1,0 +1,35 @@
+extends layout
+
+block styles
+	link(rel='stylesheet',href='stylesheets/plainSudoku.css')
+
+block scripts
+	script(src='javascripts/plainSudoku.js')
+
+block content
+	h1= title
+	p Solve Sudoku problems instantly with this online tool!
+
+	div(class='row')
+		div(class='col-sm-2')
+		div(class='col-sm-8', id='content-area' style='text-align:center')
+			table(id='sudoku-grid',border='1',style='border-collapse:collapse')
+				each row in [1,2,3,4,5,6,7,8,9]
+					tr(class='row')
+						each col in [1,2,3,4,5,6,7,8,9]
+							td(class='cell')
+								input(type='number',min='1',max='9',id='cell'+((row-1)*9+col))
+
+			br
+
+			input(type='file' accept='.txt' id='input1D' style='visibility:hidden')
+
+			button(type='button',class='btn btn-primary active',id='upload-1D')
+				|Import puzzle(1D) 
+			each row in [1,2,3,4,5]
+				&nbsp;
+
+			button(type='button',class='btn btn-primary active',id='solve')
+				|Click to solve!
+
+		div(class='col-sm-2')
