@@ -57,6 +57,11 @@ var displayResult = function(result,status,xhr){
 };
 
 
+var validFileContent = function(fields){
+	fields = fields.trim();
+	return /^[.1-9]*$/.test(fields);
+}
+
 var upload1D = function(){
 	var fields,fileBox,newFile,validFile,fileReader,i;
 	fileBox = $('#input1D');
@@ -64,26 +69,23 @@ var upload1D = function(){
 
 	fileBox.on('change',function(){
 		newFile = fileBox[0].files[0];
-		validFile = true;
-		validFile = validFile && newFile.size==81
-		validFile = validFile && newFile.type=="text/plain"
-
-		if(!validFile){
-			alert('File should be in text format and of size 81 bytes');
-			return ;
-		}
-
 		fileReader = new FileReader();
 		fileReader.onload = function(e){
-			fields = e.target.result;
-			for(i=1;i<=81;i++){
-				if(fields[i]=='.'){
-					$('#cell'+i).val("");
-				}
-				else{
-					$('#cell'+i).val(fields[i]);
+			fields = e.target.result.trim();
+			if(newFile.size<=100 && validFileContent(fields)){
+				for(i=1;i<=81;i++){
+					if(fields[i-1]=='.'){
+						$('#cell'+i).val("");
+					}
+					else{
+						$('#cell'+i).val(fields[i-1]);
+					}
 				}
 			}
+			else{
+				alert('File should be smaller than 100 bytes and follow pattern syntax');
+			}
+			fileBox.val(null);
 		}
 		fileReader.readAsText(newFile);
 	});
