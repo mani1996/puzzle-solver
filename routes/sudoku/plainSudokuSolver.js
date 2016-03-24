@@ -25,7 +25,6 @@ var validBoard = function(values){
 	return ok;
 }
 
-
 var solve = function(values,filled,prevPos){
 	var i,start,ok,minChoice,result,val1,start1;
 	minChoice = 9; // We determine box which offers least number of alternate moves and play

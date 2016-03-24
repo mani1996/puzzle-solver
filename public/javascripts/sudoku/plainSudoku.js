@@ -7,7 +7,7 @@ var parseFields = function(){
 	return JSON.stringify(values);
 }
 
-var updateUI = function(state){
+var updateUI = function(state,time){
 
 	if(state){
 		// UI update on success
@@ -19,6 +19,7 @@ var updateUI = function(state){
 			class:'btn btn-primary active'
 		});
 		$('#content-area').append(hlink);
+		$('#timeTaken').text('Time taken : '+time+'ms');
 	}
 	else{
 		$('#solve').text('Click to solve!');
@@ -29,7 +30,6 @@ var displayResult = function(result,status,xhr){
 	var result,i,error;
 	if(status=='success'){
 		result = JSON.parse(result);
-
 		if('errors' in result){
 			for(var error in result['errors']){
 				alert(result['errors'][error]);
@@ -38,15 +38,15 @@ var displayResult = function(result,status,xhr){
 		}
 		else{
 			for(i=1;i<=81;i++){
-				if(result[i-1]>0){
+				if(result['solution'][i-1]>0){
 					// Newly added results
 					$('#cell'+i).css('color','green');
 				}
-				$('#cell'+i).val(Math.abs(result[i-1]));
+				$('#cell'+i).val(Math.abs(result['solution'][i-1]));
 				$('#cell'+i).prop('readonly',true);
 			}
 
-			updateUI(true);
+			updateUI(true,result['timeTaken']);
 		}
 	}
 	else{

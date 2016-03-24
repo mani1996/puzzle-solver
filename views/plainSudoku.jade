@@ -20,9 +20,12 @@ block content
 							td(class='cell')
 								input(type='number',min='1',max='9',id='cell'+((row-1)*9+col))
 
-			br
 
 			input(type='file' accept='.txt' id='input1D' style='visibility:hidden')
+
+			div(id='timeTaken',style='font-weight:bold')
+
+			br
 
 			button(type='button',class='btn btn-primary active',id='upload-1D')
 				|Import puzzle(1D) 

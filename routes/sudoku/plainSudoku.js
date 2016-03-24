@@ -11,8 +11,8 @@ router.get('/', function(req, res, next) {
 
 
 router.post('/', function(req,res,next){
-	var i,sanityCheck,ipCheck,solution,errors;
-
+	var i,sanityCheck,ipCheck,solution,errors,startMilliseconds,endMilliseconds;
+	startMilliseconds = Date.now();
 	try{
 		sanityCheck = true;
 		errorCells = []
@@ -58,7 +58,8 @@ router.post('/', function(req,res,next){
 				*	 This condition fails if the given problem does
 				*    not have a solution
 				*/
-				res.end(JSON.stringify(solution));
+				endMilliseconds = Date.now();
+				res.end(JSON.stringify({'solution':solution,'timeTaken':endMilliseconds-startMilliseconds}));
 			}
 			else{
 				res.end(JSON.stringify({'errors':['This problem does not have a solution']}));
