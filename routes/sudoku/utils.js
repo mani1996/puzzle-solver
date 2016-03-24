@@ -31,7 +31,7 @@ var boxCheck = function(pos,arr){
 }
 
 var fieldCheck = function(val){
-	return (val=='') || (/[1-9]/.test(val));
+	return (val=='') || (/^[1-9]$/.test(val)); // Field can be empty or have value 1 to 9
 }
 
 var isNumber = function(val){

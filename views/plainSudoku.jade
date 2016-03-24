@@ -17,8 +17,8 @@ block content
 				each row in [1,2,3,4,5,6,7,8,9]
 					tr(class='row')
 						each col in [1,2,3,4,5,6,7,8,9]
-							td(class='cell')
-								input(type='number',min='1',max='9',id='cell'+((row-1)*9+col))
+							td
+								input(type='number',min='1',max='9',class='cell',id='cell'+((row-1)*9+col))
 
 
 			input(type='file' accept='.txt' id='input1D' style='visibility:hidden')

@@ -17,7 +17,7 @@ router.post('/', function(req,res,next){
 		sanityCheck = true;
 		errorCells = []
 		existingCells = []
-		for(i in req.body){
+		for(i=0;i<req.body.length;i++){
 			if(utils.fieldCheck(req.body[i])){
 				req.body[i] = parseInt(req.body[i]);
 				if(utils.isNumber(req.body[i])){
@@ -26,10 +26,9 @@ router.post('/', function(req,res,next){
 			}
 			else{
 				sanityCheck = false;
-				errorCells.push(i);
+				errorCells.push(i+1);
 			}
 		}
-		console.log(existingCells.length);
 		if(sanityCheck){
 			ipCheck = true;
 
@@ -37,6 +36,12 @@ router.post('/', function(req,res,next){
 				ipCheck = ipCheck && utils.rowCheck(i,req.body);
 				ipCheck = ipCheck && utils.colCheck(i,req.body);
 				ipCheck = ipCheck && utils.boxCheck(i,req.body);
+
+				if(!utils.rowCheck(i,req.body) || !utils.colCheck(i,req.body)
+					|| !utils.boxCheck(i,req.body)){
+					errorCells.push(i+1);
+				}
+
 			}
 
 			if(ipCheck){
@@ -51,22 +56,33 @@ router.post('/', function(req,res,next){
 				}
 
 				ipCheck = !!(solution);
-			}
 
-			if(ipCheck){
-				/* 
-				*	 This condition fails if the given problem does
-				*    not have a solution
-				*/
-				endMilliseconds = Date.now();
-				res.end(JSON.stringify({'solution':solution,'timeTaken':endMilliseconds-startMilliseconds}));
+				if(ipCheck){
+					/* 
+					*	 This condition fails if the given problem does
+					*    not have a solution
+					*/
+					endMilliseconds = Date.now();
+					res.end(JSON.stringify({'solution':solution,'timeTaken':endMilliseconds-startMilliseconds}));
+				}
+				else{
+					res.end(JSON.stringify({'errors':['This problem does not have a solution']}));
+				}
 			}
 			else{
-				res.end(JSON.stringify({'errors':['This problem does not have a solution']}));
+				// Identify error cells to improve UI			
+				res.end(JSON.stringify({
+					'errors':['This problem does not have a solution'],
+					'cells':errorCells
+				}));
 			}
+
 		}
 		else{
-			res.end(JSON.stringify({'errors':['Every box should be empty or contain a digit from 1-9']}));
+			res.end(JSON.stringify({
+				'errors':['Every box should be empty or contain a digit from 1-9'],
+				'cells': errorCells
+			}));
 		}
 	}
 	catch(e){

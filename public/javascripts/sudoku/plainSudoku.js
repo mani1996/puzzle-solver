@@ -7,8 +7,9 @@ var parseFields = function(){
 	return JSON.stringify(values);
 }
 
-var updateUI = function(state,time){
-
+var updateUI = function(state,param){
+	var i;
+	// If state is true, then param is time taken. Else, it is the list of error cells
 	if(state){
 		// UI update on success
 		$('#solve').remove();
@@ -19,9 +20,16 @@ var updateUI = function(state,time){
 			class:'btn btn-primary active'
 		});
 		$('#content-area').append(hlink);
-		$('#timeTaken').text('Time taken : '+time+'ms');
+		$('#timeTaken').text('Time taken : '+param+'ms');
 	}
 	else{
+		if(param){
+			for(i=1;i<=81;i++){
+				if(param.indexOf(i)>-1){
+					$('#cell'+i).css('background-color','red');
+				}
+			}
+		}
 		$('#solve').text('Click to solve!');
 	}
 }
@@ -34,7 +42,7 @@ var displayResult = function(result,status,xhr){
 			for(var error in result['errors']){
 				alert(result['errors'][error]);
 			}
-			updateUI(false);
+			updateUI(false,result['cells']);
 		}
 		else{
 			for(i=1;i<=81;i++){
@@ -106,4 +114,7 @@ var requestSolution = function(){
 $(document).ready(function(){
 	$('#solve').click(requestSolution);
 	$('#upload-1D').click(upload1D);
+	$('.cell').focus(function(){
+		$('.cell').css('background-color','white');
+	})
 });
