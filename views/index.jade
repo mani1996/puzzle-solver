@@ -1,5 +1,11 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1 Puzzle Solver
+  p Collection of various puzzle solvers
+  
+  h3 List of puzzles
+  ul(style='font-size:1.5em')
+    li 
+      a(href='/sudoku')
+        |Sudoku

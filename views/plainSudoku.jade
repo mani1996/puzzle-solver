@@ -4,7 +4,7 @@ block styles
 	link(rel='stylesheet',href='stylesheets/plainSudoku.css')
 
 block scripts
-	script(src='javascripts/plainSudoku.js')
+	script(src='javascripts/sudoku/plainSudoku.js')
 
 block content
 	h1= title
@@ -28,8 +28,13 @@ block content
 				|Import puzzle(1D) 
 			each row in [1,2,3,4,5]
 				&nbsp;
-
 			button(type='button',class='btn btn-primary active',id='solve')
 				|Click to solve!
+			each row in [1,2,3,4,5]
+				&nbsp;
+			a(class='btn btn-primary active',href='/')
+				|Go to home page
+			each row in [1,2,3,4,5]
+				&nbsp;
 
 		div(class='col-sm-2')

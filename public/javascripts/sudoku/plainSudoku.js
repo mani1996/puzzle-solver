@@ -100,6 +100,7 @@ var requestSolution = function(){
 	});
 }
 
+
 $(document).ready(function(){
 	$('#solve').click(requestSolution);
 	$('#upload-1D').click(upload1D);
