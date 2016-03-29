@@ -8,8 +8,7 @@ var bodyParser = require('body-parser');
 // Endpoint vars
 var routes = require('./routes/index');
 var plainSudoku = require('./routes/sudoku/plainSudoku');
-
-
+var towersOfHanoi = require('./routes/towers-of-hanoi/towersOfHanoi');
 var app = express();
 
 // view engine setup
@@ -26,7 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/sudoku', plainSudoku);
-
+app.use('/towersOfHanoi',towersOfHanoi);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
