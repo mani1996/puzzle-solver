@@ -17,6 +17,7 @@ router.post('/', function(req,res,next){
 		req.body = parseInt(req.body);
 		console.log(req.body);
 		var solution = solver.solve(req.body);
+		solution.noOfDisks = req.body;
 		res.end(JSON.stringify(solution));
 	}
 	else{
