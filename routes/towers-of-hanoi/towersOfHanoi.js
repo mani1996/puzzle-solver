@@ -11,7 +11,7 @@ router.get('/', function(req,res,next){
 });
 
 router.post('/', function(req,res,next){
-	req.body = req.body[0];
+	req.body = req.body['input'];
 	// req.body contains number of disks
 	if(utils.isNumber(req.body)){
 		req.body = parseInt(req.body);

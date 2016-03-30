@@ -1,0 +1,41 @@
+extends layout
+
+// Bootstrap has been included in layout.jade
+
+block styles
+	link(rel='stylesheet',href='stylesheets/towersOfHanoi.css')
+
+block scripts
+	script(src='javascripts/towers-of-hanoi/towersOfHanoi.js')
+
+block content
+	h1= title
+	p= desc
+
+	div(class='row')
+		div(class='col-sm-2')
+
+		div(class='col-sm-8')
+
+			br
+			br
+
+			label(for='no-of-disks')
+				|Number of disks:
+
+			&nbsp;
+			&nbsp;
+
+			input(name='no-of-disks' type='number' min='1' max='10')
+
+			&nbsp;
+			&nbsp;
+
+			button(class='btn btn-primary active' id='solvePuzzle')
+				|Solve puzzle
+
+			br
+			br
+			canvas(id='solutionCanvas')
+
+		div(class='col-sm-2')

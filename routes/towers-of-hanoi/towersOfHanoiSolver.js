@@ -64,7 +64,6 @@ var getNextState = function(currentState, move){
 var solve = function(noOfDisks){
 	var currentState,moves,nextState;
 	moves = simulateAlgo(noOfDisks,poles.left,poles.right,poles.middle);
-	console.log(moves);
 	states = [];
 	currentState = getInitState(noOfDisks);
 	states.push(clone(currentState));
