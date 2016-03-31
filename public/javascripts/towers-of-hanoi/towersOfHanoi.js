@@ -13,7 +13,7 @@ var PIXEL_RATIO = (function(){
 // Clears the canvas contents
 var clearCanvas = function(){
 	ctx.clearRect(0,0,canvas.width,canvas.height);
-}
+};
 
 
 // Sets text in the canvas at desired coordinate
@@ -22,7 +22,7 @@ var setCanvasHeading = function(heading,topMargin){
 	ctx.font = "30px Arial";
 	var leftMargin = 320 - ctx.measureText(heading).width/2;
 	ctx.fillText(heading,leftMargin*PIXEL_RATIO,topMargin*PIXEL_RATIO);
-}
+};
 
 
 // Draws current game state on canvas
@@ -64,7 +64,7 @@ var setPoles = function(state){
 		paint_centered(585,350-25*(i+1),120,25,state[2][i],'white');
 	}
 
-}
+};
 
 
 var paint_centered = function(x, y, w, h, text,color) {
@@ -73,7 +73,7 @@ var paint_centered = function(x, y, w, h, text,color) {
         RECTANGLE_LINE_WIDTH : 1,
         VALUE_FONT : '20px Arial',
         VALUE_FILL_STYLE : color || 'yellow'
-    }
+    };
 
     if (ctx) {
         // draw rectangular
@@ -91,7 +91,7 @@ var paint_centered = function(x, y, w, h, text,color) {
         textY = y+h/2;
         ctx.fillText(text, textX, textY);
     }
-}
+};
 
 // Function to make AJAX call for solution
 var requestSolution = function(){
@@ -108,7 +108,7 @@ var requestSolution = function(){
 		clearCanvas();
 		setCanvasHeading('Check your internet connection and try again!',120);
 	});
-}
+};
 
 
 // A class to display sequence of canvas as video
@@ -176,7 +176,7 @@ var Player = function(noOfDisks,states){
 		else{
 			self.playSim();
 		}
-	}
+	};
 
 
 	self.incSpeed = function(){
@@ -200,63 +200,6 @@ var Player = function(noOfDisks,states){
 			self.renderPlayer(); // stopSim() and playSim() call renderPlayer()
 		}
 	};
-	
-
-	self.createPlayer = function(){
-		var playerZone = $('#canvas-player');
-		playerZone.html('');
-
-		var playButton = $('<button></button>');
-		playButton.attr({
-			class: 'btn btn-primary active',
-			id: 'play-video'
-		});
-		playButton.click(self.togglePause);
-
-
-		var decSpeedButton = $('<button>-</button>');
-		decSpeedButton.attr({
-			class: 'btn btn-danger active',
-			id: 'decrease-speed'
-		});
-		decSpeedButton.css({
-			'font-size':'large',
-			'font-weight':'bold'
-		});
-		decSpeedButton.click(self.decSpeed);
-
-
-		var incSpeedButton = $('<button>+</button>');
-		incSpeedButton.attr({
-			class: 'btn btn-success active',
-			id: 'increase-speed'
-		});
-		incSpeedButton.css({
-			'font-size':'large',
-			'font-weight':'bold'
-		});
-		incSpeedButton.click(self.incSpeed);
-
-
-		var speedSpan = $('<span></span>');
-		speedSpan.attr({
-			id: 'speed-factor'
-		});
-		speedSpan.css({
-			'font-size':'large',
-			'font-weight':'bold'
-		});
-
-
-		playerZone.append(playButton);
-		playerZone.append(decSpeedButton)
-		playerZone.append(speedSpan)
-		playerZone.append(incSpeedButton);
-
-
-		setCanvasHeading('Click "Play" to start the video',120);
-		self.renderPlayer();
-	};
 
 
 	// Renders state of the player after every change
@@ -278,16 +221,68 @@ var Player = function(noOfDisks,states){
 		}
 
 		playerZone.find('#speed-factor').html("&nbsp;&nbsp;"+playSpeeds[speedIndex]+" x&nbsp;&nbsp;");
-	}
+	};
 
 
 	// Clear player widgets in UI
 	self.clearPlayer = function(){
 		$('#canvas-player').html('');
-	}
+	};
 
-	self.createPlayer(); // Display player UI at start of video
-}
+
+	// Anonymous function to create a new instance + UI of video player
+	(function(){
+		var playerZone = $('#canvas-player');
+		playerZone.html('');
+
+		var playButton = $('<button></button>');
+		playButton.attr({
+			class: 'btn btn-primary active',
+			id: 'play-video'
+		});
+		playButton.click(self.togglePause);
+
+		var decSpeedButton = $('<button>-</button>');
+		decSpeedButton.attr({
+			class: 'btn btn-danger active',
+			id: 'decrease-speed'
+		});
+		decSpeedButton.css({
+			'font-size':'large',
+			'font-weight':'bold'
+		});
+		decSpeedButton.click(self.decSpeed);
+
+		var incSpeedButton = $('<button>+</button>');
+		incSpeedButton.attr({
+			class: 'btn btn-success active',
+			id: 'increase-speed'
+		});
+		incSpeedButton.css({
+			'font-size':'large',
+			'font-weight':'bold'
+		});
+		incSpeedButton.click(self.incSpeed);
+
+		var speedSpan = $('<span></span>');
+		speedSpan.attr({
+			id: 'speed-factor'
+		});
+		speedSpan.css({
+			'font-size':'large',
+			'font-weight':'bold'
+		});
+
+		playerZone.append(playButton);
+		playerZone.append(decSpeedButton)
+		playerZone.append(speedSpan)
+		playerZone.append(incSpeedButton);
+
+		setCanvasHeading('Click "Play" to start the video',120);
+		self.renderPlayer();
+	})();
+
+};
 
 
 // Callback method of requestSolution
@@ -319,7 +314,7 @@ var displayResult = function(res,status,xhr){
 	else{
 		alert('Unable to connect to server. Please try again!');
 	}
-}
+};
 
 
 

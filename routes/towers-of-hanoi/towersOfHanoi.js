@@ -15,7 +15,6 @@ router.post('/', function(req,res,next){
 	// req.body contains number of disks
 	if(utils.isNumber(req.body)){
 		req.body = parseInt(req.body);
-		console.log(req.body);
 		var solution = solver.solve(req.body);
 		solution.noOfDisks = req.body;
 		res.end(JSON.stringify(solution));
