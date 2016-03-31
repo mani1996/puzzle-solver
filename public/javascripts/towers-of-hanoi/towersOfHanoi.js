@@ -280,6 +280,12 @@ var Player = function(noOfDisks,states){
 		playerZone.find('#speed-factor').html("&nbsp;&nbsp;"+playSpeeds[speedIndex]+" x&nbsp;&nbsp;");
 	}
 
+
+	// Clear player widgets in UI
+	self.clearPlayer = function(){
+		$('#canvas-player').html('');
+	}
+
 	self.createPlayer(); // Display player UI at start of video
 }
 
@@ -290,6 +296,8 @@ var displayResult = function(res,status,xhr){
 
 	if(typeof canvasPlayer !== "undefined"){
 		canvasPlayer.stopSim(); // Stop already running player instance
+		canvasPlayer.clearPlayer(); // Update UI
+		canvasPlayer = undefined;
 	}
 
 	clearCanvas();
