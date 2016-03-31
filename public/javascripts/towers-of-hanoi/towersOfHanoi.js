@@ -96,7 +96,6 @@ var paint_centered = function(x, y, w, h, text,color) {
 // Function to make AJAX call for solution
 var requestSolution = function(){
 	clearCanvas();
-	stopSim(); // Stop already running animation
 	setCanvasHeading('Loading solution....',30);
 
 	var getSolution = $.post('/towersOfHanoi',
@@ -112,15 +111,187 @@ var requestSolution = function(){
 }
 
 
-var simulator;
+// A class to display sequence of canvas as video
+var Player = function(noOfDisks,states){
+	var simulator;
+	var playSpeeds = [-16,-4,-1,1,4,16];
+	var speedIndex = 3; // Index of current speed
+	var currentMove = 0;
+	var isPaused = true;
+	var self = this;
 
-var stopSim = function(){
-	clearInterval(simulator);
+	self.stopSim = function(){
+		clearInterval(simulator);
+
+		// Safety check
+		if(!isPaused){
+			isPaused = true;
+		}
+
+		self.renderPlayer();
+	};
+
+	self.showMove = function(){
+		clearCanvas();
+		setCanvasHeading('Towers Of Hanoi for '+noOfDisks+' disks - Move '+
+		currentMove,30);
+		setPoles(states[currentMove]);
+	};
+
+	self.playSim = function(){
+
+		// Safety check
+		if(isPaused){
+			isPaused = false; 
+		}
+
+		simulator = setInterval(function(){
+			if(currentMove>=states.length){
+				// Upper bound on move number
+				currentMove = states.length-1; 
+				isPaused = true;
+				self.stopSim();		
+			}
+			else if(currentMove<0){
+				// Lower bound on move number
+				currentMove = 0;
+				isPaused = true;
+				self.stopSim();
+			}
+			else{
+				self.showMove();
+				self.renderPlayer();
+				currentMove+=playSpeeds[speedIndex];
+			}
+		},1000);
+	};
+
+
+	// toggle value of isPaused
+	self.togglePause = function(){
+		isPaused = !isPaused;
+		if(isPaused){
+			self.stopSim();
+		}
+		else{
+			self.playSim();
+		}
+	}
+
+
+	self.incSpeed = function(){
+		speedIndex = Math.min(speedIndex+1,playSpeeds.length-1);
+		if(!isPaused){
+			self.stopSim();
+			self.playSim();
+		}
+		else{
+			self.renderPlayer(); // stopSim() and playSim() call renderPlayer()
+		}
+	};
+
+	self.decSpeed = function(){
+		speedIndex = Math.max(speedIndex-1,0);
+		if(!isPaused){
+			self.stopSim();
+			self.playSim();
+		}
+		else{
+			self.renderPlayer(); // stopSim() and playSim() call renderPlayer()
+		}
+	};
+	
+
+	self.createPlayer = function(){
+		var playerZone = $('#canvas-player');
+		playerZone.html('');
+
+		var playButton = $('<button></button>');
+		playButton.attr({
+			class: 'btn btn-primary active',
+			id: 'play-video'
+		});
+		playButton.click(self.togglePause);
+
+
+		var decSpeedButton = $('<button>-</button>');
+		decSpeedButton.attr({
+			class: 'btn btn-danger active',
+			id: 'decrease-speed'
+		});
+		decSpeedButton.css({
+			'font-size':'large',
+			'font-weight':'bold'
+		});
+		decSpeedButton.click(self.decSpeed);
+
+
+		var incSpeedButton = $('<button>+</button>');
+		incSpeedButton.attr({
+			class: 'btn btn-success active',
+			id: 'increase-speed'
+		});
+		incSpeedButton.css({
+			'font-size':'large',
+			'font-weight':'bold'
+		});
+		incSpeedButton.click(self.incSpeed);
+
+
+		var speedSpan = $('<span></span>');
+		speedSpan.attr({
+			id: 'speed-factor'
+		});
+		speedSpan.css({
+			'font-size':'large',
+			'font-weight':'bold'
+		});
+
+
+		playerZone.append(playButton);
+		playerZone.append(decSpeedButton)
+		playerZone.append(speedSpan)
+		playerZone.append(incSpeedButton);
+
+
+		setCanvasHeading('Click "Play" to start the video',120);
+		self.renderPlayer();
+	};
+
+
+	// Renders state of the player after every change
+	self.renderPlayer = function(){
+		var playerZone = $('#canvas-player');
+		var playVideo = playerZone.find('#play-video');
+
+		if(isPaused){
+			playVideo.html("Play");
+			playVideo.attr({
+				class: 'btn btn-success active'
+			});
+		}
+		else{
+			playVideo.html("Pause");
+			playVideo.attr({
+				class: 'btn btn-warning active'
+			});
+		}
+
+		playerZone.find('#speed-factor').html("&nbsp;&nbsp;"+playSpeeds[speedIndex]+" x&nbsp;&nbsp;");
+	}
+
+	self.createPlayer(); // Display player UI at start of video
 }
+
 
 // Callback method of requestSolution
 var displayResult = function(res,status,xhr){
 	var i,states,move;
+
+	if(typeof canvasPlayer !== "undefined"){
+		canvasPlayer.stopSim(); // Stop already running player instance
+	}
+
 	clearCanvas();
 
 	if(status=="success"){
@@ -128,23 +299,12 @@ var displayResult = function(res,status,xhr){
 
 		if('errors' in res){
 			// Improper input
-			clearCanvas();
 			for(i=0;i<res['errors'].length;i++){
 				setCanvasHeading(res['errors'][i],30*(i+1));
 			}	
 		}
 		else{
-			states = res.states;
-			move = 0;
-			simulator = setInterval(function(){
-				clearCanvas();
-				setCanvasHeading('Towers Of Hanoi for '+res['noOfDisks']+' disks - Move '+move,30);
-				setPoles(states[move]);
-				move+=1;
-				if(move>=states.length){
-					stopSim();
-				}
-			},1000);
+			canvasPlayer = new Player(res.noOfDisks,res.states);
 		}
 
 	}
@@ -163,7 +323,7 @@ $(document).ready(function(){
 		canvas.height = 400 * PIXEL_RATIO;
 		ctx = canvas.getContext("2d");
 		ctx.setTransform(PIXEL_RATIO, 0, 0, PIXEL_RATIO, 0, 0);
-		setCanvasHeading("Hi there!",320-ctx.measureText("Hi there!").width/2,120);
+		setCanvasHeading("Hi there!",120);
 	})();
 
 	$('#solvePuzzle').click(requestSolution); // Event for button click
